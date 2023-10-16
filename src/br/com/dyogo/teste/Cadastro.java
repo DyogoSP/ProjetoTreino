@@ -205,7 +205,7 @@ public class Cadastro extends JFrame {
 			}
 		});
 		btnSalvar.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnSalvar.setBounds(315, 56, 89, 23);
+		btnSalvar.setBounds(315, 68, 89, 23);
 		contentPane.add(btnSalvar);
 		btnApagar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -236,7 +236,7 @@ public class Cadastro extends JFrame {
 			}
 		});
 		btnApagar.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnApagar.setBounds(315, 136, 89, 23);
+		btnApagar.setBounds(315, 171, 89, 23);
 		contentPane.add(btnApagar);
 		btnAlterar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -248,7 +248,7 @@ public class Cadastro extends JFrame {
 			}
 		});
 		btnAlterar.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnAlterar.setBounds(315, 171, 89, 23);
+		btnAlterar.setBounds(315, 137, 89, 23);
 		contentPane.add(btnAlterar);
 
 		JLabel lblId = new JLabel("ID");
@@ -275,7 +275,7 @@ public class Cadastro extends JFrame {
 			}
 		});
 		btnCancelar.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btnCancelar.setBounds(315, 90, 89, 23);
+		btnCancelar.setBounds(315, 102, 89, 23);
 
 		contentPane.add(btnCancelar);
 
