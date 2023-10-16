@@ -23,8 +23,7 @@ public class Cadastro extends JFrame {
 	private JTextField txtNome;
 	private JTextField txtTelefone;
 
-	int posAtual = 0;
-	int ultPos = 0;
+	int posicaoAtual = 0;
 	boolean novo = true;
 
 	JButton btnNovo = new JButton("Novo");
@@ -38,8 +37,8 @@ public class Cadastro extends JFrame {
 
 	Connection con = ConnectionFactory.getConection();
 	Agenda agd = new Agenda();
-	List<Pessoa> lpss = agd.getList();
-	Pessoa pss = lpss.get(posAtual);
+	List<Pessoa> lista = agd.getList();
+	Pessoa pss = lista.get(posicaoAtual);
 	private JTextField txtId;
 	private final JButton btnCancelar = new JButton("Cancelar");
 
@@ -77,8 +76,7 @@ public class Cadastro extends JFrame {
 				txtNome.setText(" ");
 				txtTelefone.setText(" ");
 
-				lpss.get(posAtual);
-				ultPos = lpss.size();
+				lista.get(posicaoAtual);
 			}
 		});
 		btnNovo.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -88,13 +86,12 @@ public class Cadastro extends JFrame {
 		btnUltimo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				if (ultPos >= 0) {
-					posAtual = lpss.size() - 1;
-					Pessoa pess = lpss.get(posAtual);
-					txtId.setText(String.valueOf(pess.getId()));
-					txtNome.setText(pess.getNome());
-					txtTelefone.setText(pess.getTelefone());
-				}
+				posicaoAtual = lista.size() - 1;
+				Pessoa pess = lista.get(posicaoAtual);
+				txtId.setText(String.valueOf(pess.getId()));
+				txtNome.setText(pess.getNome());
+				txtTelefone.setText(pess.getTelefone());
+
 			}
 		});
 		btnUltimo.setBounds(223, 171, 61, 23);
@@ -102,10 +99,10 @@ public class Cadastro extends JFrame {
 		btnProximo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				if (ultPos >= 0 && posAtual < lpss.size() - 1) {
-					posAtual += 1;
+				if (posicaoAtual < lista.size() - 1) {
+					posicaoAtual += 1;
 
-					Pessoa pess = lpss.get(posAtual);
+					Pessoa pess = lista.get(posicaoAtual);
 					txtId.setText(String.valueOf(pess.getId()));
 					txtNome.setText(pess.getNome());
 					txtTelefone.setText(pess.getTelefone());
@@ -118,9 +115,9 @@ public class Cadastro extends JFrame {
 		btnAnterior.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				if (ultPos >= 0 && posAtual > 0) {
-					posAtual -= 1;
-					Pessoa pess = lpss.get(posAtual);
+				if (posicaoAtual > 0) {
+					posicaoAtual -= 1;
+					Pessoa pess = lista.get(posicaoAtual);
 					txtId.setText(String.valueOf(pess.getId()));
 					txtNome.setText(pess.getNome());
 					txtTelefone.setText(pess.getTelefone());
@@ -156,13 +153,12 @@ public class Cadastro extends JFrame {
 		contentPane.add(lblTelefone);
 		btnPrimeiro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (ultPos >= 0) {
-					posAtual = 0;
-					Pessoa pess = lpss.get(posAtual);
-					txtId.setText(String.valueOf(pess.getId()));
-					txtNome.setText(pess.getNome());
-					txtTelefone.setText(pess.getTelefone());
-				}
+				posicaoAtual = 0;
+				Pessoa pess = lista.get(posicaoAtual);
+				txtId.setText(String.valueOf(pess.getId()));
+				txtNome.setText(pess.getNome());
+				txtTelefone.setText(pess.getTelefone());
+
 			}
 		});
 		btnPrimeiro.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -185,14 +181,14 @@ public class Cadastro extends JFrame {
 						agd.adiconar(pess);
 						JOptionPane.showMessageDialog(null, "contato salvo");
 						pess.setId(agd.getUltId());
-						lpss.add(pess);
-						
+						lista.add(pess);
+
 						txtId.setText(String.valueOf(pess.getId()));
 						txtNome.setText(pess.getNome());
 						txtTelefone.setText(pess.getTelefone());
 
 					} else {
-						pess = lpss.get(posAtual);
+						pess = lista.get(posicaoAtual);
 						pess.setNome(txtNome.getText());
 						pess.setTelefone(txtTelefone.getText());
 						agd.alterar(pess);
@@ -221,18 +217,18 @@ public class Cadastro extends JFrame {
 						JOptionPane.QUESTION_MESSAGE);
 
 				if (conf == JOptionPane.YES_OPTION) {
-					pessoa = lpss.get(posAtual);
-					lpss.remove(posAtual);
+					pessoa = lista.get(posicaoAtual);
+					lista.remove(posicaoAtual);
 					agd.remove(pessoa);
 
-					if (posAtual == lpss.size()) {
-						pessoa = lpss.get(posAtual -= 1);
+					if (posicaoAtual == lista.size()) {
+						pessoa = lista.get(posicaoAtual -= 1);
 						txtId.setText(String.valueOf(pessoa.getId()));
 						txtNome.setText(pessoa.getNome());
 						txtTelefone.setText(pessoa.getTelefone());
 					}
 				}
-				pessoa = lpss.get(posAtual);
+				pessoa = lista.get(posicaoAtual);
 				txtId.setText(String.valueOf(pessoa.getId()));
 				txtNome.setText(pessoa.getNome());
 				txtTelefone.setText(pessoa.getTelefone());
@@ -240,7 +236,7 @@ public class Cadastro extends JFrame {
 			}
 		});
 		btnApagar.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnApagar.setBounds(315, 93, 89, 23);
+		btnApagar.setBounds(315, 136, 89, 23);
 		contentPane.add(btnApagar);
 		btnAlterar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -252,7 +248,7 @@ public class Cadastro extends JFrame {
 			}
 		});
 		btnAlterar.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnAlterar.setBounds(315, 128, 89, 23);
+		btnAlterar.setBounds(315, 171, 89, 23);
 		contentPane.add(btnAlterar);
 
 		JLabel lblId = new JLabel("ID");
@@ -271,15 +267,15 @@ public class Cadastro extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				desativarComponentes();
 
-				Pessoa pess = lpss.get(posAtual);
+				Pessoa pess = lista.get(posicaoAtual);
 				txtId.setText(String.valueOf(pess.getId()));
 				txtNome.setText(pess.getNome());
 				txtTelefone.setText(pess.getTelefone());
 
 			}
 		});
-		btnCancelar.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnCancelar.setBounds(294, 172, 110, 23);
+		btnCancelar.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btnCancelar.setBounds(315, 90, 89, 23);
 
 		contentPane.add(btnCancelar);
 
