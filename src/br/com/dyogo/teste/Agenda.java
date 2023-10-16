@@ -15,7 +15,7 @@ public class Agenda {
 		this.connection = ConnectionFactory.getConection();
 	}
 
-	public void adiconar(Pessoas cadastro) {
+	public void adiconar(Pessoa cadastro) {
 		String sql = "insert into agenda " + "(nome,telefone)" + " values(?,?)";
 
 		try {
@@ -34,7 +34,7 @@ public class Agenda {
 		}
 	}
 
-	public void alterar(Pessoas conecit) {
+	public void alterar(Pessoa conecit) {
 		String sql = "update agenda set nome=?, telefone=? " + "where id=?";
 		try {
 			PreparedStatement stmt = connection.prepareStatement(sql);
@@ -48,7 +48,7 @@ public class Agenda {
 		}
 	}
 
-	public void remove(Pessoas contat) {
+	public void remove(Pessoa contat) {
 		try {
 			PreparedStatement stmt = connection.prepareStatement("delete " + "from agenda where id=?");
 			stmt.setInt(1, contat.getId());
@@ -58,15 +58,15 @@ public class Agenda {
 			throw new RuntimeException(e);
 		}
 	}
-	public  List<Pessoas> getList() {
+	public  List<Pessoa> getList() {
 
 		try {
-			List<Pessoas> contatos = new ArrayList<Pessoas>();
+			List<Pessoa> contatos = new ArrayList<Pessoa>();
 			PreparedStatement stmt = this.connection.prepareStatement("select * from agenda order by id");
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Pessoas contato = new Pessoas();
+				Pessoa contato = new Pessoa();
 				contato.setId(rs.getInt("id"));
 				contato.setNome(rs.getString("nome"));
 				contato.setTelefone(rs.getString("telefone"));
@@ -76,6 +76,28 @@ public class Agenda {
 			rs.close();
 			stmt.close();
 			return contatos;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+	
+	public int getUltId() {
+
+		try {
+			
+			PreparedStatement stmt = this.connection.prepareStatement("select max(id) cod from agenda");
+			
+			ResultSet rs = stmt.executeQuery();
+
+			int id = 0; 
+			while (rs.next()) {		
+				id = rs.getInt("cod");
+			}
+			rs.close();
+			stmt.close();
+			return id;
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

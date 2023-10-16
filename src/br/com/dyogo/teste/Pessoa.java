@@ -1,7 +1,7 @@
 package br.com.dyogo.teste;
 
 
-public class Pessoas {
+public class Pessoa {
 
 	private int id;
 	private String nome;

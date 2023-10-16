@@ -12,7 +12,7 @@ public class Principal {
 		
 		Connection con = ConnectionFactory.getConection();
 		Agenda agenda = new Agenda();
-		Pessoas p = new Pessoas();
+		Pessoa p = new Pessoa();
 		
 		System.out.print("digite um nome: ");
 		String nome = sc.nextLine();

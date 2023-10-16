@@ -38,8 +38,8 @@ public class Cadastro extends JFrame {
 
 	Connection con = ConnectionFactory.getConection();
 	Agenda agd = new Agenda();
-	List<Pessoas> lpss = agd.getList();
-	Pessoas pss = lpss.get(ultPos);
+	List<Pessoa> lpss = agd.getList();
+	Pessoa pss = lpss.get(posAtual);
 	private JTextField txtId;
 	private final JButton btnCancelar = new JButton("Cancelar");
 
@@ -77,7 +77,7 @@ public class Cadastro extends JFrame {
 				txtNome.setText(" ");
 				txtTelefone.setText(" ");
 
-				posAtual += 1;
+				lpss.get(posAtual);
 				ultPos = lpss.size();
 			}
 		});
@@ -90,7 +90,7 @@ public class Cadastro extends JFrame {
 
 				if (ultPos >= 0) {
 					posAtual = lpss.size() - 1;
-					Pessoas pess = lpss.get(posAtual);
+					Pessoa pess = lpss.get(posAtual);
 					txtId.setText(String.valueOf(pess.getId()));
 					txtNome.setText(pess.getNome());
 					txtTelefone.setText(pess.getTelefone());
@@ -105,7 +105,7 @@ public class Cadastro extends JFrame {
 				if (ultPos >= 0 && posAtual < lpss.size() - 1) {
 					posAtual += 1;
 
-					Pessoas pess = lpss.get(posAtual);
+					Pessoa pess = lpss.get(posAtual);
 					txtId.setText(String.valueOf(pess.getId()));
 					txtNome.setText(pess.getNome());
 					txtTelefone.setText(pess.getTelefone());
@@ -120,7 +120,7 @@ public class Cadastro extends JFrame {
 
 				if (ultPos >= 0 && posAtual > 0) {
 					posAtual -= 1;
-					Pessoas pess = lpss.get(posAtual);
+					Pessoa pess = lpss.get(posAtual);
 					txtId.setText(String.valueOf(pess.getId()));
 					txtNome.setText(pess.getNome());
 					txtTelefone.setText(pess.getTelefone());
@@ -158,7 +158,7 @@ public class Cadastro extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (ultPos >= 0) {
 					posAtual = 0;
-					Pessoas pess = lpss.get(posAtual);
+					Pessoa pess = lpss.get(posAtual);
 					txtId.setText(String.valueOf(pess.getId()));
 					txtNome.setText(pess.getNome());
 					txtTelefone.setText(pess.getTelefone());
@@ -174,28 +174,38 @@ public class Cadastro extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				desativarComponentes();
 
+				Pessoa pess;
 				if (!txtNome.getText().trim().isEmpty()) {
-					Pessoas pess = lpss.get(posAtual);
-					// pess.setId(Integer.parseInt(txtId.getText()));
-					pess.setNome(txtNome.getText());
-					pess.setTelefone(txtTelefone.getText());
+
 					if (novo) {
+
+						pess = new Pessoa();
+						pess.setNome(txtNome.getText());
+						pess.setTelefone(txtTelefone.getText());
 						agd.adiconar(pess);
 						JOptionPane.showMessageDialog(null, "contato salvo");
+						pess.setId(agd.getUltId());
+						lpss.add(pess);
+						
+						txtId.setText(String.valueOf(pess.getId()));
+						txtNome.setText(pess.getNome());
+						txtTelefone.setText(pess.getTelefone());
+
 					} else {
+						pess = lpss.get(posAtual);
+						pess.setNome(txtNome.getText());
+						pess.setTelefone(txtTelefone.getText());
 						agd.alterar(pess);
 						JOptionPane.showMessageDialog(null, "Contato alterado");
+
+						txtId.setText(String.valueOf(pess.getId()));
+						txtNome.setText(pess.getNome());
+						txtTelefone.setText(pess.getTelefone());
 					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Error! O nome esta em branco");
-
 				}
 
-				
-				Pessoas pess = lpss.get(posAtual);
-				txtId.setText(String.valueOf(pess.getId()));
-				txtNome.setText(pess.getNome());
-				txtTelefone.setText(pess.getTelefone());
 			}
 		});
 		btnSalvar.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -204,27 +214,28 @@ public class Cadastro extends JFrame {
 		btnApagar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
+				Pessoa pessoa = new Pessoa();
+
 				int conf;
-				conf = JOptionPane.showConfirmDialog(null, "tem certeza?", "deletar",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				conf = JOptionPane.showConfirmDialog(null, "tem certeza?", "deletar", JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+
 				if (conf == JOptionPane.YES_OPTION) {
-					Pessoas pessoa = lpss.get(posAtual);
+					pessoa = lpss.get(posAtual);
 					lpss.remove(posAtual);
 					agd.remove(pessoa);
-				}
 
-				if(posAtual == lpss.size()) {
-					posAtual -= 1;
-					Pessoas pess = lpss.get(posAtual);
-					txtId.setText(String.valueOf(pess.getId()));
-					txtNome.setText(pess.getNome());
-					txtTelefone.setText(pess.getTelefone());
+					if (posAtual == lpss.size()) {
+						pessoa = lpss.get(posAtual -= 1);
+						txtId.setText(String.valueOf(pessoa.getId()));
+						txtNome.setText(pessoa.getNome());
+						txtTelefone.setText(pessoa.getTelefone());
+					}
 				}
-				
-				Pessoas pess = lpss.get(posAtual);
-				txtId.setText(String.valueOf(pess.getId()));
-				txtNome.setText(pess.getNome());
-				txtTelefone.setText(pess.getTelefone());
+				pessoa = lpss.get(posAtual);
+				txtId.setText(String.valueOf(pessoa.getId()));
+				txtNome.setText(pessoa.getNome());
+				txtTelefone.setText(pessoa.getTelefone());
 
 			}
 		});
@@ -259,8 +270,8 @@ public class Cadastro extends JFrame {
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				desativarComponentes();
-				
-				Pessoas pess = lpss.get(posAtual);
+
+				Pessoa pess = lpss.get(posAtual);
 				txtId.setText(String.valueOf(pess.getId()));
 				txtNome.setText(pess.getNome());
 				txtTelefone.setText(pess.getTelefone());
