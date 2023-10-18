@@ -1,46 +1,47 @@
 package br.com.dyogo.teste;
 
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.util.List;
-import java.awt.event.ActionEvent;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+import br.com.dyogo.conection.ConnectionFactory;
 
 public class Cadastro extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private JTextField txtNome;
-	private JTextField txtTelefone;
-
 	int posicaoAtual = 0;
 	boolean novo = true;
 
-	JButton btnNovo = new JButton("Novo");
-	JButton btnSalvar = new JButton("Salvar");
-	JButton btnApagar = new JButton("Deletar");
-	JButton btnAlterar = new JButton("Alterar");
-	JButton btnUltimo = new JButton(">>");
-	JButton btnProximo = new JButton(">");
-	JButton btnAnterior = new JButton("<");
-	JButton btnPrimeiro = new JButton("<<");
+	private JPanel contentPane;
+	private JTextField txtNome;
+	private JTextField txtTelefone;
+	private JTextField txtId;
+
+	private JButton btnNovo = new JButton("Novo");
+	private JButton btnSalvar = new JButton("Salvar");
+	private JButton btnApagar = new JButton("Deletar");
+	private JButton btnAlterar = new JButton("Alterar");
+	private JButton btnUltimo = new JButton(">>");
+	private JButton btnProximo = new JButton(">");
+	private JButton btnAnterior = new JButton("<");
+	private JButton btnPrimeiro = new JButton("<<");
+	private JButton btnCancelar = new JButton("Cancelar");
 
 	Connection con = ConnectionFactory.getConection();
 	Agenda agd = new Agenda();
 	List<Pessoa> lista = agd.getList();
 	Pessoa pss = lista.get(posicaoAtual);
-	private JTextField txtId;
-	private final JButton btnCancelar = new JButton("Cancelar");
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -61,7 +62,7 @@ public class Cadastro extends JFrame {
 	 */
 	public Cadastro() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 430, 244);
+		setBounds(100, 100, 430, 271);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -71,12 +72,12 @@ public class Cadastro extends JFrame {
 		btnNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ativarComponentes();
-
 				txtId.setText("");
 				txtNome.setText(" ");
 				txtTelefone.setText(" ");
 
-				lista.get(posicaoAtual);
+				posicaoAtual = lista.size();
+				txtNome.requestFocus();
 			}
 		});
 		btnNovo.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -94,7 +95,7 @@ public class Cadastro extends JFrame {
 
 			}
 		});
-		btnUltimo.setBounds(223, 171, 61, 23);
+		btnUltimo.setBounds(223, 198, 61, 23);
 		contentPane.add(btnUltimo);
 		btnProximo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -110,7 +111,7 @@ public class Cadastro extends JFrame {
 			}
 		});
 		btnProximo.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnProximo.setBounds(152, 171, 61, 23);
+		btnProximo.setBounds(152, 198, 61, 23);
 		contentPane.add(btnProximo);
 		btnAnterior.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -125,7 +126,7 @@ public class Cadastro extends JFrame {
 			}
 		});
 		btnAnterior.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnAnterior.setBounds(81, 171, 61, 23);
+		btnAnterior.setBounds(81, 198, 61, 23);
 		contentPane.add(btnAnterior);
 
 		txtNome = new JTextField();
@@ -133,6 +134,7 @@ public class Cadastro extends JFrame {
 		txtNome.setBounds(81, 55, 171, 20);
 		txtNome.setColumns(10);
 		txtNome.setText(pss.getNome());
+
 		contentPane.add(txtNome);
 
 		txtTelefone = new JTextField();
@@ -162,7 +164,7 @@ public class Cadastro extends JFrame {
 			}
 		});
 		btnPrimeiro.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnPrimeiro.setBounds(10, 171, 61, 23);
+		btnPrimeiro.setBounds(10, 198, 61, 23);
 		contentPane.add(btnPrimeiro);
 
 		btnSalvar.setEnabled(false);
@@ -210,29 +212,32 @@ public class Cadastro extends JFrame {
 		btnApagar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				Pessoa pessoa = new Pessoa();
+				Pessoa pessoa;
 
 				int conf;
 				conf = JOptionPane.showConfirmDialog(null, "tem certeza?", "deletar", JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE);
 
-				if (conf == JOptionPane.YES_OPTION) {
-					pessoa = lista.get(posicaoAtual);
-					lista.remove(posicaoAtual);
-					agd.remove(pessoa);
+				if (!lista.isEmpty()) {
+					if (conf == JOptionPane.YES_OPTION) {
+						pessoa = lista.get(posicaoAtual);
+						lista.remove(posicaoAtual);
+						agd.remove(pessoa);
 
-					if (posicaoAtual == lista.size()) {
-						pessoa = lista.get(posicaoAtual -= 1);
-						txtId.setText(String.valueOf(pessoa.getId()));
-						txtNome.setText(pessoa.getNome());
-						txtTelefone.setText(pessoa.getTelefone());
+						if (posicaoAtual == lista.size()) {
+							pessoa = lista.get(posicaoAtual -= 1);
+							txtId.setText(String.valueOf(pessoa.getId()));
+							txtNome.setText(pessoa.getNome());
+							txtTelefone.setText(pessoa.getTelefone());
+						}
 					}
+					pessoa = lista.get(posicaoAtual);
+					txtId.setText(String.valueOf(pessoa.getId()));
+					txtNome.setText(pessoa.getNome());
+					txtTelefone.setText(pessoa.getTelefone());
+				} else {
+					JOptionPane.showMessageDialog(null, "A lista esta vazia");
 				}
-				pessoa = lista.get(posicaoAtual);
-				txtId.setText(String.valueOf(pessoa.getId()));
-				txtNome.setText(pessoa.getNome());
-				txtTelefone.setText(pessoa.getTelefone());
-
 			}
 		});
 		btnApagar.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -240,11 +245,14 @@ public class Cadastro extends JFrame {
 		contentPane.add(btnApagar);
 		btnAlterar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ativarComponentes();
-				txtNome.setEditable(true);
-				txtTelefone.setEditable(true);
+				if (!lista.isEmpty()) {
 
-				novo = false;
+					ativarComponentes();
+					txtNome.setEditable(true);
+					txtTelefone.setEditable(true);
+
+					novo = false;
+				}
 			}
 		});
 		btnAlterar.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -267,17 +275,27 @@ public class Cadastro extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				desativarComponentes();
 
-				Pessoa pess = lista.get(posicaoAtual);
-				txtId.setText(String.valueOf(pess.getId()));
-				txtNome.setText(pess.getNome());
-				txtTelefone.setText(pess.getTelefone());
-
+				if (!lista.isEmpty()) {
+					Pessoa pess = lista.get(posicaoAtual);
+					txtId.setText(String.valueOf(pess.getId()));
+					txtNome.setText(pess.getNome());
+					txtTelefone.setText(pess.getTelefone());
+				}
 			}
 		});
 		btnCancelar.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnCancelar.setBounds(315, 102, 89, 23);
 
 		contentPane.add(btnCancelar);
+
+		JButton btnFechar = new JButton("fechar\r\n");
+		btnFechar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		btnFechar.setBounds(315, 205, 89, 23);
+		contentPane.add(btnFechar);
 
 	}
 

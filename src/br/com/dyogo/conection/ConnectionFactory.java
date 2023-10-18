@@ -1,4 +1,4 @@
-package br.com.dyogo.teste;
+package br.com.dyogo.conection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
